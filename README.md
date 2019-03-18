@@ -1,3 +1,6 @@
+Front End to advise gamers about their games
+
+3/18/2019 David Churn created
 # project-gamer-guide
 
 ## Project setup
