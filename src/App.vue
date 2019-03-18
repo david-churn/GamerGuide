@@ -1,10 +1,15 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+      <img alt="David logo" class="logo" src="./assets/David-logo.png">
+      <router-link to="/">Guide</router-link> |
+      <router-link to="/Games">Games</router-link> |
+      <router-link to="/Plays">Plays</router-link> |
+      <router-link to="/About">About</router-link>
     </div>
+    <h1>Gamer Guide</h1>
     <router-view/>
+    <footer>&copy; 2019</footer>
   </div>
 </template>
 
@@ -25,5 +30,9 @@
       color: #42b983;
     }
   }
+}
+.logo {
+  height: 2em;
+  width: 2em;
 }
 </style>
