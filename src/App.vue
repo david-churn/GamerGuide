@@ -14,15 +14,31 @@
 </template>
 
 <style lang="scss">
+/*  Colors */
+$whitish: #f6fedb;
+$grayish: #9d9d9d;
+$ltblue: #a6b1e1;
+$blue: #064789;
+$redish: #a31621;
+
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  color: black;
+  margin: 2em;
+}
+body {
+  background: $whitish;
+}
+footer {
+  background: $redish;
+  color: $whitish;
+  margin: 1em 0;
   text-align: center;
-  color: #2c3e50;
 }
 #nav {
-  padding: 30px;
+  padding: 1em;
   a {
     font-weight: bold;
     color: #2c3e50;
