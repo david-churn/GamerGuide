@@ -2,94 +2,89 @@
   <div class="games">
     <h2>{{ title }}</h2>
     <h3>Lookup</h3>
-    <div class="">
-      <div class="inblock">ID:</div>
-      <input vmodel="game_key.gameId" type="number">
-    </div>
-    <!-- <div class="">- or -</div>
     <div class="inblock">
       <div class="inblock">Name:</div>
-      <input vmodel="game_key.nameTx" type="text">
+      <input v-model="lookup.nameTx" type="text">
     </div>
-    <div class="inblock">- and -</div>
     <div class="inblock">
       <div class="inblock">Edition:</div>
-      <input vmodel="game_key.editionTx" type="text">
-    </div> -->
+      <input v-model="lookup.editionTx" type="text">
+    </div>
     <div class="">
       <button type="button" @click="findgame">Search</button>
       <button type="button" @click="cleargame">Clear</button>
     </div>
+    <h3>Game Information</h3>
     <form>
       <fieldset>
         <legend>Game Information</legend>
         <div class="">
           <div class="rownm">Id:</div>
-          <div class="inblock">{{game.gameID}}</div>
+          <div class="inblock">{{crudGame.gameID}}</div>
         </div>
         <div class="">
           <div class="rownm">Name:</div>
-          <input vmodel="game.nameTx" type="text">
+          <input v-model="crudGame.nameTx" type="text">
         </div>
         <div class="">
           <div class="rownm">Edition:</div>
-          <input vmodel="game.editionTx" type="text">
+          <input v-model="crudGame.editionTx" type="text">
         </div>
         <div class="">
           <div class="rownm">Designer:</div>
-          <input vmodel="game.designerNm" type="text">
+          <input v-model="crudGame.designerNm" type="text">
         </div>
         <div class="">
           <div class="rownm">Company:</div>
-          <input vmodel="game.companyNm" type="text">
+          <input v-model="crudGame.companyNm" type="text">
         </div>
         <div class="">
           <div class="rownm">Description:</div>
-          <input vmodel="game.descriptionTx" type="text">
+          <input v-model="crudGame.descriptionTx" type="text">
         </div>
         <div class="">
           <div class="rownm">Rating (1-5):</div>
-          <input vmodel="game.ratingQt" type="number">
+          <input v-model="crudGame.ratingQt" type="number">
         </div>
         <div class="">
           <div class="rownm">Minimum Age:</div>
-          <input vmodel="game.playerMinYr" type="number">
+          <input v-model="crudGame.playerMinYr" type="number">
         </div>
         <div class="">
           <div class="rownm">Minimum Players:</div>
-          <input vmodel="game.playerMinQt" type="number">
+          <input v-model="crudGame.playerMinQt" type="number">
         </div>
         <div class="">
           <div class="rownm">Maximum Players:</div>
-          <input vmodel="game.playerMaxQt" type="number">
+          <input v-model="crudGame.playerMaxQt" type="number">
         </div>
         <div class="">
           <div class="rownm">Recommended Players:</div>
-          <input vmodel="game.playerBestQt" type="number">
+          <input v-model="crudGame.playerBestQt" type="number">
         </div>
         <div class="">
           <div class="rownm">Minimum Play Time:</div>
-          <input vmodel="game.timeMinQt" type="number">
+          <input v-model="crudGame.timeMinQt" type="number">
         </div>
         <div class="">
           <div class="rownm">Maximum Play Time:</div>
-          <input vmodel="game.timeMaxQt" type="number">
+          <input v-model="crudGame.timeMaxQt" type="number">
         </div>
         <div class="">
           <div class="rownm">In the Shrink Wrap?</div>
-          <input vmodel="game.shrinkIn" type="checkbox">Yes
+          <input v-model="crudGame.shrinkIn" type="checkbox">Yes
         </div>
         <div class="">
-          <div class="rownm">Rule Read?</div>
-          <input vmodel="game.rulesIn" type="checkbox">Yes
+          <div class="rownm">Rules Read?</div>
+          <input v-model="crudGame.rulesIn" type="checkbox">Yes
         </div>
         <div class="">
           <div class="rownm">Sell/Trade?</div>
-          <input vmodel="game.liquidateCd" type="text">
+          <input v-model="crudGame.liquidateCd" type="text">
         </div>
         <div class="">
           <div class="rownm">Search Keywords:</div>
-          <input vmodel="game.keywordsTx" type="text">
+          <input v-model="crudGame.keywordsTx" type="text">
         </div>
       </fieldset>
     </form>
@@ -98,6 +93,13 @@
       <button type="button" @click="chggame">Change game</button>
       <button type="button" @click="resetgame">Reset game</button>
       <button type="button" @click="delgame">Delete game</button>
+    </div>
+    <div class="" v-if="games.length > 1">
+      <h3>Game List</h3>
+      <div class="" v-for="listGame in games" :key="listGame.gameID">
+        <button type="button" @click="selectdup(listGame.gameID)">Select</button>
+        {{listGame.nameTx}} - {{listGame.editionTx}}
+      </div>
     </div>
   </div>
 </template>
@@ -110,43 +112,37 @@ export default {
   data: function () {
     return {
       title: 'Game Maintenance',
-      game: {},
-      gameLookup: {},
-      originalGame: {}
+      games: [],
+      lookup: {
+        nameTx: '',
+        editionTx: ''
+      },
+      crudGame: {},
+      gameNbr: 0
     }
-  // }
-  // created() {
-  //   axios.get('http://localhost:3000/employees')
-  //     .then( (resp) => {
-  //       this.employees = resp.data;
-  //     })
-  //     .catch( (error) => {
-  //       console.log(error);
-  //     })
   },
   methods: {
+    addgame () {},
+    chggame () {},
+    delgame () {},
+    resetgame () {},
+    selectdup () {},
+    cleargame () {
+      this.lookup.nameTx = ''
+      this.lookup.editionTx = ''
+    },
     findgame () {
-      axios.post('http://localhost:3000/game', this.gameLookup)
+      let requestStr = `http://localhost:3000/game/name/${encodeURIComponent(this.lookup.nameTx)}`
+      if (this.lookup.editionTx !== '') {
+        requestStr += `/edition/${encodeURIComponent(this.lookup.editionTx)}`
+      }
+      console.log(requestStr)
+      axios.get(requestStr)
         .then ((resp) => {
-          this.game = {
-            gameID: resp.data.gameID,
-            nameTx: resp.data.nameTx,
-            editionTx: resp.data.editionTx,
-            designerNm: resp.data.designerNm,
-            companyNm: resp.data.companyNm,
-            descriptionTx: resp.data.descriptionTx,
-            ratingQt: resp.data.ratingQt,
-            playerMinYr: resp.data.playerMinYr,
-            playerMinQt: resp.data.playerMinQt,
-            playerMaxQt: resp.data.playerMaxQt,
-            playerBestQt: resp.data.playerBestQt,
-            timeMinQt: resp.data.timeMinQt,
-            timeMaxQt: resp.data.timeMaxQt,
-            shrinkIn: resp.data.shrinkIn,
-            rulesIn: resp.data.rulesIn,
-            liquidateCd: resp.data.liquidateCd,
-            keywordsTx: resp.data.keywordsTx
-          }
+          console.log(resp);
+          this.games = resp.data
+          this.crudGame = resp.data[0]
+          this.gameNbr = 0
         })
         .catch ((error) => {
           throw (error)
@@ -166,6 +162,9 @@ input {
 textarea {
   margin: .5em;
   min-width: 30em;
+}
+button {
+  margin: .5em;
 }
 .inblock {
   display:inline-block;
