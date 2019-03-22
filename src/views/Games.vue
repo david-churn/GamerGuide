@@ -96,8 +96,8 @@
     </div>
     <div class="" v-if="games.length > 1">
       <h3>Game List</h3>
-      <div class="" v-for="listGame in games" :key="listGame.gameID">
-        <button type="button" @click="selectdup(listGame.gameID)">Select</button>
+      <div class="" v-for="(listGame,index) in games" :key="index">
+        <button type="button" @click="selectlist(index)">Select</button>
         {{listGame.nameTx}} - {{listGame.editionTx}}
       </div>
     </div>
@@ -118,18 +118,56 @@ export default {
         editionTx: ''
       },
       crudGame: {},
-      gameNbr: 0
+      gameIndex: 0
     }
   },
   methods: {
-    addgame () {},
-    chggame () {},
-    delgame () {},
-    resetgame () {},
-    selectdup () {},
+    addgame () {
+      let requestStr = `http://localhost:3000/addgame/`
+      axios.post(requestStr, this.crudGame)
+        .then ((resp) => {
+          console.log(`post resp=`,resp);
+          this.crudGame.gameID = resp.data.gameID;
+          this.games.push(this.crudGame);
+          this.gameIndex = this.games.length - 1;
+        })
+        .catch ((error) => {
+          throw (error)
+        })
+    },
+    chggame () {
+      let requestStr = `http://localhost:3000/chggame/ ${this.crudGame.gameID}`;
+      console.log(requestStr)
+      axios.put(requestStr, this.crudGame)
+        .then ((resp) => {
+          console.log(`post resp=`,resp);
+        })
+        .catch ((error) => {
+          throw (error)
+        })
+    },
     cleargame () {
       this.lookup.nameTx = ''
       this.lookup.editionTx = ''
+    },
+    delgame () {
+      let requestStr = `http://localhost:3000/delgame/ ${this.crudGame.gameID}`;
+      console.log(requestStr)
+      axios.delete(requestStr)
+        .then ((resp) => {
+          console.log(`delete resp=`,resp);
+          this.crudGame = {};
+//  How do I get the deleted game removed from the array?!?
+          this.games.gameID = -1;
+// !!! Sorting objects leaves them in the same order...
+          this.games.sort();
+          this.games.shift();
+          this.gameIndex = 0;
+          this.loadCrud(this.gameIndex);
+        })
+        .catch ((error) => {
+          throw (error)
+        })
     },
     findgame () {
       let requestStr = `http://localhost:3000/game/name/${encodeURIComponent(this.lookup.nameTx)}`
@@ -139,14 +177,42 @@ export default {
       console.log(requestStr)
       axios.get(requestStr)
         .then ((resp) => {
-          console.log(resp);
-          this.games = resp.data
-          this.crudGame = resp.data[0]
-          this.gameNbr = 0
+          console.log(`get resp=`,resp);
+          this.games = resp.data;
+          this.gameIndex = 0;
+          this.loadCrud(this.gameIndex);
         })
         .catch ((error) => {
           throw (error)
         })
+    },
+    loadCrud(i) {
+      this.crudGame = {
+        gameID: this.games[i].gameID,
+        nameTx: this.games[i].nameTx,
+        editionTx: this.games[i].editionTx,
+        designerNm: this.games[i].designerNm,
+        companyNm: this.games[i].companyNm,
+        descriptionTx: this.games[i].descriptionTx,
+        ratingQt: this.games[i].ratingQt,
+        playerMinYr: this.games[i].playerMinYr,
+        playerMinQt: this.games[i].playerMinQt,
+        playerMaxQt: this.games[i].playerMaxQt,
+        playerBestQt: this.games[i].playerBestQt,
+        timeMinQt: this.games[i].timeMinQt,
+        timeMaxQt: this.games[i].timeMaxQt,
+        shrinkIn: this.games[i].shrinkIn,
+        rulesIn: this.games[i].rulesIn,
+        liquidateCd: this.games[i].liquidateCd,
+        keywordsTx: this.games[i].keywordsTx,
+      }
+    },
+    resetgame () {
+      this.loadCrud(this.gameIndex);
+    },
+    selectlist (i) {
+      this.gameIndex = i;
+      this.loadCrud(this.gameIndex);
     }
   }
 }
