@@ -20,7 +20,9 @@ $grayish: #9d9d9d;
 $ltblue: #a6b1e1;
 $blue: #064789;
 $redish: #a31621;
-
+* {
+  box-sizing: border-box;
+}
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -50,5 +52,9 @@ footer {
 .logo {
   height: 2em;
   width: 2em;
+}
+// Move the easy-toast messages down from the top border of the screen.
+.et-wrapper.et-top {
+  margin-top: 5em;
 }
 </style>
