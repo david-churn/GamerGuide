@@ -44,17 +44,17 @@
         </div>
       </fieldset>
     </form>
-    <h3>Lookup</h3>
+    <h3>Search</h3>
     <div class="border">
       <div class="inblock">
         <div class="inblock">Name:</div>
-        <input v-model="lookup.nameTx" type="text">
+        <input v-model="lookup.nameTx" type="text">*
       </div>
       <div class="">
         <button type="button" @click="findPlay">Search</button>
       </div>
     </div>
-    <div class="" v-if="plays.length > 1">
+    <div class="" v-if="plays.length">
       <h3>Play List</h3>
       <div class="card" v-for="(listPlay,index) in plays" :key="index">
         <div class="">
@@ -82,6 +82,7 @@
 
 <script>
 import axios from 'axios';
+import moment from 'moment';
 import Vue from 'vue';
 
 export default {
@@ -135,14 +136,14 @@ export default {
         })
     },
     chgPlay (i) {
-      let requestStr = `http://localhost:3000/chgplay/ ${this.plays[i].playID}`;
-      console.log(requestStr)
+      let requestStr = `http://localhost:3000/chgplay/${this.plays[i].playID}`;
+      console.log(requestStr, this.plays[i]);
       axios.put(requestStr, this.plays[i])
         .then ((resp) => {
-          if (resp.data.errors.length > 0) {
+          if (resp.data.errors) {
             Vue.toast('Server error, please check console for details', this.errorToast);
             console.log(`post resp=`,resp);
-          }
+        }
           else {
             Vue.toast('Play Changed', this.notifyToast);
           }
@@ -155,12 +156,11 @@ export default {
     },
     delPlay (i) {
       if (confirm('delete ' + this.plays[i].nameTx + '?')) {
-        let requestStr = `http://localhost:3000/delplay/ ${this.plays[i].playID}`;
+        let requestStr = `http://localhost:3000/delplay/${this.plays[i].playID}`;
         console.log(requestStr)
         axios.delete(requestStr)
           .then ((resp) => {
-            console.log(`delete resp=`,resp);
-            if (resp.data.errors.length > 0) {
+            if (resp.data.errors) {
               Vue.toast('Server error, please check console for details', this.errorToast);
               console.log(`post resp=`,resp);
             }
@@ -182,32 +182,39 @@ export default {
         playID: -1,
         nameTx: null,
         editionTx: null,
-        startDtTm: null,
-        endDtTm: null,
+        startDtTm: moment().format('YYYY-MM-DDThh:mm'),
+        endDtTm: moment().format('YYYY-MM-DDThh:mm'),
         playerQt: 1,
         ratingQt: null,
         winCd: "",
       };
     },
     findPlay() {
-      let requestStr = `http://localhost:3000/`;
       if (this.lookup.nameTx) {
-        requestStr += `play/name/${encodeURIComponent(this.lookup.nameTx)}`;
+        let requestStr = `http://localhost:3000/play/name/${encodeURIComponent(this.lookup.nameTx)}`;
+        console.log(requestStr);
+        axios.get(requestStr)
+          .then ((resp) => {
+            console.log(`get resp=`,resp);
+            this.plays = resp.data;
+  // Put the datetimes in the right format to display.
+            this.plays.forEach(play => {
+              play.startDtTm = moment(play.startDtTm).format('YYYY-MM-DDThh:mm');
+              play.endDtTm = moment(play.endDtTm).format('YYYY-MM-DDThh:mm');
+            })
+            if (this.plays.length === 0) {
+              Vue.toast('Zero plays found', this.notifyToast);
+            }
+          })
+          .catch ((error) => {
+            Vue.toast('Server error, please check console for details', this.errorToast);
+            console.log(`get error=`, error);
+            // throw (error)
+          })
       }
       else {
-        requestStr += `plays`;
+        Vue.toast('Please enter a Name in Search', this.notifyToast);
       }
-      console.log(requestStr);
-      axios.get(requestStr)
-        .then ((resp) => {
-          console.log(`get resp=`,resp);
-          this.plays = resp.data;
-        })
-        .catch ((error) => {
-          Vue.toast('Server error, please check console for details', this.errorToast);
-          console.log(`get error=`, error);
-          // throw (error)
-        })
     },
   }
 }
@@ -230,7 +237,7 @@ textarea {
   width: 5em;
 }
 .shorter {
-  width: 16.6em;
+  width: 17em;
 }
 button {
   margin: 1em .5em 0;

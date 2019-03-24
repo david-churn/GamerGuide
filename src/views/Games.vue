@@ -142,7 +142,7 @@ export default {
       let requestStr = `http://localhost:3000/addgame/`
       axios.post(requestStr, this.crudGame)
         .then ((resp) => {
-          if (resp.data.errors.length > 0) {
+          if (resp.data.errors) {
             Vue.toast('Server error, please check console for details', this.errorToast);
             console.log(`post resp=`,resp);
           }
@@ -164,7 +164,7 @@ export default {
       console.log(requestStr)
       axios.put(requestStr, this.crudGame)
         .then ((resp) => {
-          if (resp.data.errors.length > 0) {
+          if (resp.data.errors) {
             Vue.toast('Server error, please check console for details', this.errorToast);
             console.log(`post resp=`,resp);
           }
@@ -189,7 +189,7 @@ export default {
         axios.delete(requestStr)
           .then ((resp) => {
             console.log(`delete resp=`,resp);
-            if (resp.data.errors.length > 0) {
+            if (resp.data.errors) {
               Vue.toast('Server error, please check console for details', this.errorToast);
               console.log(`post resp=`,resp);
             }
