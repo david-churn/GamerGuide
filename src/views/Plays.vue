@@ -7,10 +7,6 @@
         <legend>Details</legend>
         <p>* notes required fields</p>
         <div class="">
-          <div class="rownm">Id:</div>
-          <div class="inblock">{{crudPlay.playID}}</div>
-        </div>
-        <div class="">
           <div class="rownm">Name:</div>
           <input v-model="crudPlay.nameTx" type="text">
         </div>
@@ -40,7 +36,7 @@
         </div>
         <div class="">
           <button type="button" @click="addPlay">Add Play</button>
-          <button type="button" @click="emptyCrud">Clear Play</button>
+          <button type="button" @click="emptyCrud">Clear Details</button>
         </div>
       </fieldset>
     </form>
@@ -48,10 +44,12 @@
     <div class="border">
       <div class="inblock">
         <div class="inblock">Name:</div>
-        <input v-model="lookup.nameTx" type="text">*
+        <input v-model="search.nameTx" type="text">*
       </div>
       <div class="">
         <button type="button" @click="findPlay">Search</button>
+        <button type="button" @click="clearSearch">Clear Search</button>
+
       </div>
     </div>
     <div class="" v-if="plays.length">
@@ -98,7 +96,7 @@ export default {
         duration: 5000,
         closeable: true
       },
-      lookup: {
+      search: {
         nameTx: null,
       },
       plays: [],
@@ -125,8 +123,18 @@ export default {
           }
           else {
             this.crudPlay.playID = resp.data.playID;
-            this.plays.push(this.crudPlay);
-            Vue.toast('Play Added', this.notifyToast);
+            let newPlay = {
+              playID: this.crudPlay.playID,
+              nameTx: this.crudPlay.nameTx,
+              editionTx: this.crudPlay.editionTx,
+              startDtTm: this.crudPlay.startDtTm,
+              endDtTm: this.crudPlay.endDtTm,
+              playerQt: this.crudPlay.playerQt,
+              ratingQt: this.crudPlay.ratingQt,
+              winCd: this.crudPlay.winCd,
+              };
+            this.plays.push(newPlay);
+            this.emptyCrud();            Vue.toast('Play Added', this.notifyToast);
           }
         })
         .catch ((error) => {
@@ -137,7 +145,6 @@ export default {
     },
     chgPlay (i) {
       let requestStr = `http://localhost:3000/chgplay/${this.plays[i].playID}`;
-      console.log(requestStr, this.plays[i]);
       axios.put(requestStr, this.plays[i])
         .then ((resp) => {
           if (resp.data.errors) {
@@ -154,10 +161,13 @@ export default {
           // throw (error)
         })
     },
+    clearSearch () {
+      this.search.nameTx = null;
+      this.plays = [];
+    },
     delPlay (i) {
       if (confirm('delete ' + this.plays[i].nameTx + '?')) {
         let requestStr = `http://localhost:3000/delplay/${this.plays[i].playID}`;
-        console.log(requestStr)
         axios.delete(requestStr)
           .then ((resp) => {
             if (resp.data.errors) {
@@ -190,12 +200,10 @@ export default {
       };
     },
     findPlay() {
-      if (this.lookup.nameTx) {
-        let requestStr = `http://localhost:3000/play/name/${encodeURIComponent(this.lookup.nameTx)}`;
-        console.log(requestStr);
+      if (this.search.nameTx) {
+        let requestStr = `http://localhost:3000/play/name/${encodeURIComponent(this.search.nameTx)}`;
         axios.get(requestStr)
           .then ((resp) => {
-            console.log(`get resp=`,resp);
             this.plays = resp.data;
   // Put the datetimes in the right format to display.
             this.plays.forEach(play => {

@@ -7,6 +7,7 @@
       <ol>
         <li>Import games from boardgamegeek.</li>
         <li>Improve the "pick a game" feature beyond a mostly random pick.</li>
+        <li>Add a notes field to the database for personal expression.</li>
       </ol>
     </p>
   </div>

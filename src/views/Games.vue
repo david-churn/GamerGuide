@@ -1,15 +1,15 @@
 <template>
   <div class="games">
     <h2>{{ title }}</h2>
-    <h3>Lookup</h3>
+    <h3>Search</h3>
     <div class="border">
       <div class="">
         <div class="inblock">Name:</div>
-        <input v-model="lookup.nameTx" type="text">
+        <input v-model="search.nameTx" type="text">
       </div>
       <div class="">
         <div class="inblock">Edition:</div>
-        <input v-model="lookup.editionTx" type="text">
+        <input v-model="search.editionTx" type="text">
       </div>
       <div class="">
         <button type="button" @click="findGame">Search</button>
@@ -21,10 +21,6 @@
       <fieldset>
         <legend>Details</legend>
         <p>* notes required fields</p>
-        <div class="">
-          <div class="rownm">Id:</div>
-          <div class="inblock">{{crudGame.gameID}}</div>
-        </div>
         <div class="">
           <div class="rownm">Name:</div>
           <input v-model="crudGame.nameTx" type="text">*
@@ -96,7 +92,7 @@
       <div class="" v-for="(listGame,index) in games" :key="index">
         <button type="button" @click="selectList(index)">Select</button>
         {{listGame.nameTx}}
-        <span v-if="listGame.editionTx"> - {{listGame.editionTx}}</span>
+        <span v-show="listGame.editionTx"> - {{listGame.editionTx}}</span>
       </div>
     </div>
   </div>
@@ -121,7 +117,7 @@ export default {
       },
       gameIndex: 0,
       games: [],
-      lookup: {
+      search: {
         nameTx: '',
         editionTx: ''
       },
@@ -148,7 +144,26 @@ export default {
           }
           else {
             this.crudGame.gameID = resp.data.gameID;
-            this.games.push(this.crudGame);
+            let newGame = {
+                gameID: this.crudGame.gameID,
+                nameTx: this.crudGame.nameTx,
+                editionTx: this.crudGame.editionTx,
+                designerNm: this.crudGame.designerNm,
+                companyNm: this.crudGame.companyNm,
+                descriptionTx: this.crudGame.descriptionTx,
+                ratingQt: this.crudGame.ratingQt,
+                playerMinYr: this.crudGame.playerMinYr,
+                playerMinQt: this.crudGame.playerMinQt,
+                playerMaxQt: this.crudGame.playerMaxQt,
+                playerBestQt: this.crudGame.playerBestQt,
+                timeMinQt: this.crudGame.timeMinQt,
+                timeMaxQt: this.crudGame.timeMaxQt,
+                shrinkIn: this.crudGame.shrinkIn,
+                rulesIn: this.crudGame.rulesIn,
+                liquidateCd: this.crudGame.liquidateCd,
+                keywordsTx: this.crudGame.keywordsTx
+              }
+            this.games.push(newGame);
             this.gameIndex = this.games.length - 1;
             Vue.toast('Game Added', this.notifyToast);
           }
@@ -161,7 +176,6 @@ export default {
     },
     chgGame () {
       let requestStr = `http://localhost:3000/chggame/ ${this.crudGame.gameID}`;
-      console.log(requestStr)
       axios.put(requestStr, this.crudGame)
         .then ((resp) => {
           if (resp.data.errors) {
@@ -179,16 +193,14 @@ export default {
         })
     },
     clearGame () {
-      this.lookup.nameTx = '';
-      this.lookup.editionTx = '';
+      this.search.nameTx = '';
+      this.search.editionTx = '';
     },
     delGame () {
       if (confirm('delete ' + this.crudGame.nameTx + '?')) {
         let requestStr = `http://localhost:3000/delgame/ ${this.crudGame.gameID}`;
-        console.log(requestStr)
         axios.delete(requestStr)
           .then ((resp) => {
-            console.log(`delete resp=`,resp);
             if (resp.data.errors) {
               Vue.toast('Server error, please check console for details', this.errorToast);
               console.log(`post resp=`,resp);
@@ -234,14 +246,12 @@ export default {
       }
     },
     findGame () {
-      let requestStr = `http://localhost:3000/game/name/${encodeURIComponent(this.lookup.nameTx)}`
-      if (this.lookup.editionTx !== '') {
-        requestStr += `/edition/${encodeURIComponent(this.lookup.editionTx)}`
+      let requestStr = `http://localhost:3000/game/name/${encodeURIComponent(this.search.nameTx)}`
+      if (this.search.editionTx !== '') {
+        requestStr += `/edition/${encodeURIComponent(this.search.editionTx)}`
       }
-      console.log(requestStr)
       axios.get(requestStr)
         .then ((resp) => {
-          console.log(`get resp=`,resp);
           this.games = resp.data;
           this.gameIndex = 0;
           this.loadCrud(this.gameIndex);
