@@ -26,6 +26,8 @@
 </template>
 
 <style lang="scss">
+@import '../node_modules/normalize.css/normalize.css';
+
 /*  Colors */
 $whitish: #f6fedb;
 $grayish: #9d9d9d;
@@ -44,13 +46,18 @@ $redish: #a31621;
 }
 body {
   background: $whitish;
-  margin: 0 2em;
   font-size: 1.2em;
+}
+input, textarea {
+  display:inline-block;
+  width: 75%;
+}
+form {
+  max-width: 90%;
 }
 footer {
   background: $redish;
   color: $whitish;
-  margin: 1em 0;
   text-align: center;
 }
 #nav {
@@ -77,6 +84,22 @@ footer {
     }
   }
 }
+/* classes */
+.bigtx {
+  display: inline-block;
+  vertical-align: top;
+}
+.border {
+  border: solid 1px black;
+  padding: 1em;
+  max-width: 30em;
+}
+.check {
+  width: 1%;
+}
+.inblock {
+  display:inline-block;
+}
 .logoplace {
   position:relative;
   top: 0;
@@ -86,10 +109,25 @@ footer {
   height: 2em;
   width: 2em;
 }
-// Move the easy-toast messages down from the top border of the screen.
-.et-wrapper.et-top {
-  margin-top: 5em;
+.nbrsize {
+  width: 10%;
 }
+.rownm {
+  display:inline-block;
+  text-align: right;
+  width: 20%;
+}
+.toast{
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+    font-size: 20em;
+}
+/* textarea {
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+} */
+/* button {
+  margin: 1em .5em 0;
+} */
+
 // responsive change
 @media (min-width: 768px) {
   #nav {
@@ -101,7 +139,7 @@ footer {
       position: absolute;
       top:0;
       right:0;
-      width: 20em;
+      width: 25em;
       :hover {
         background-color: $ltblue;
       }

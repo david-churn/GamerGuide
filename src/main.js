@@ -1,11 +1,11 @@
-import Vue from 'vue'
-import App from './App.vue'
-import Toast from 'vue-easy-toast'
-import router from './router'
+import Vue from 'vue';
+import App from './App.vue';
+import Toasted from 'vue-toasted';
+import router from './router';
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
-Vue.use(Toast);
+Vue.use(Toasted);
 
 new Vue({
   router,

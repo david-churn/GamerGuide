@@ -3,15 +3,15 @@
     <h2>{{ title }}</h2>
     <h3>Search</h3>
     <div class="border">
-      <div class="">
+      <div>
         <div class="inblock">Name:</div>
         <input v-model="search.nameTx" type="text">
       </div>
-      <div class="">
+      <div>
         <div class="inblock">Edition:</div>
         <input v-model="search.editionTx" type="text">
       </div>
-      <div class="">
+      <div>
         <button type="button" @click="findGame">Search</button>
         <button type="button" @click="clearGame">Clear</button>
       </div>
@@ -21,65 +21,65 @@
       <fieldset>
         <legend>Details</legend>
         <p>* notes required fields</p>
-        <div class="">
+        <div>
           <div class="rownm">Name:</div>
           <input v-model="crudGame.nameTx" type="text">*
         </div>
-        <div class="">
+        <div>
           <div class="rownm">Edition:</div>
           <input v-model="crudGame.editionTx" type="text" maxlength="20">
         </div>
-        <div class="">
+        <div>
           <div class="rownm">Rating (1-5):</div>
           <input v-model="crudGame.ratingQt" type="number" class="nbrsize" min="1" max="5">
         </div>
-        <div class="">
+        <div>
           <div class="rownm">Players: min:</div>
           <input v-model="crudGame.playerMinQt" type="number" class="nbrsize" min="1" max="128">*
           max:<input v-model="crudGame.playerMaxQt" type="number" class="nbrsize" min="1" max="128">*
         </div>
-        <div class="">
+        <div>
           <div class="rownm">best:</div>
           <input v-model="crudGame.playerBestQt" type="number" class="nbrsize" min="1" max="128">*
         </div>
-        <div class="">
+        <div>
           <div class="rownm">Age: min:</div>
           <input v-model="crudGame.playerMinYr" type="number" class="nbrsize" min="1" max="128">
         </div>
-        <div class="">
+        <div>
           <div class="rownm">Time: min:</div>
           <input v-model="crudGame.timeMinQt" type="number" class="nbrsize" min="1" max="128">*
           max:<input v-model="crudGame.timeMaxQt" type="number" class="nbrsize" min="1" max="128">*
         </div>
-        <div class="">
+        <div>
           <div class="rownm">Rules Read?</div>
           <input v-model="crudGame.rulesIn" type="checkbox" class="check">
         </div>
-        <div class="">
+        <div>
           <div class="rownm">Shrink Wrapped?</div>
           <input v-model="crudGame.shrinkIn" type="checkbox" class="check">
         </div>
-        <div class="">
+        <div>
           <div class="rownm">Sell?</div>
           <input v-model="crudGame.liquidateCd" type="text" class="nbrsize" maxlength="1">
         </div>
-        <div class="">
+        <div>
           <div class="rownm">Keywords:</div>
           <textarea v-model="crudGame.keywordsTx"/>
         </div>
-        <div class="">
+        <div>
           <div class="rownm">Description:</div>
           <textarea v-model="crudGame.descriptionTx"/>
         </div>
-        <div class="">
+        <div>
           <div class="rownm">Designer:</div>
           <input v-model="crudGame.designerNm" type="text">
         </div>
-        <div class="">
+        <div>
           <div class="rownm">Company:</div>
           <input v-model="crudGame.companyNm" type="text">
         </div>
-        <div class="">
+        <div>
           <button type="button" @click="addGame">Add game</button>
           <button type="button" @click="chgGame">Change game</button>
           <button type="button" @click="resetGame">Reset game</button>
@@ -87,9 +87,9 @@
         </div>
       </fieldset>
     </form>
-    <div class="" v-if="games.length > 1">
+    <div v-if="games.length > 0">
       <h3>Game List</h3>
-      <div class="" v-for="(listGame,index) in games" :key="index">
+      <div v-for="(listGame,index) in games" :key="index">
         <button type="button" @click="selectList(index)">Select</button>
         {{listGame.nameTx}}
         <span v-show="listGame.editionTx"> - {{listGame.editionTx}}</span>
@@ -108,25 +108,30 @@ export default {
     return {
       title: 'Game Maintenance',
       crudGame: {},
-      errorToast: {
-        className: 'et-alert',
-        horizontalPosition: 'center',
-        verticalPosition: 'top',
-        duration: 5000,
-        closeable: true
-      },
       gameIndex: 0,
       games: [],
       search: {
         nameTx: '',
         editionTx: ''
       },
+      errorToast: {
+        position: 'top-center',
+        duration: 5000,
+        fullWidth: true,
+        fitToScren: true,
+        type: 'error'
+      },
       notifyToast: {
-        className: 'et-info',
-        horizontalPosition: 'center',
-        verticalPosition: 'top',
+        position: 'top-center',
         duration: 2000,
-        closeable: true
+        type: 'info',
+        theme: 'bubble'
+      },
+      successToast: {
+        position: 'top-center',
+        duration: 2000,
+        type: 'success',
+        theme: 'bubble'
       }
     }
   },
@@ -138,8 +143,9 @@ export default {
       let requestStr = `http://localhost:3000/addgame/`
       axios.post(requestStr, this.crudGame)
         .then ((resp) => {
+          console.log(resp.data);
           if (resp.data.errors) {
-            Vue.toast('Server error, please check console for details', this.errorToast);
+            Vue.toasted.show('Server error, please check console for details', this.errorToast);
             console.log(`post resp=`,resp);
           }
           else {
@@ -165,11 +171,11 @@ export default {
               }
             this.games.push(newGame);
             this.gameIndex = this.games.length - 1;
-            Vue.toast('Game Added', this.notifyToast);
+            Vue.toasted.show('Game Added', this.successToast);
           }
         })
         .catch ((error) => {
-          Vue.toast('Server error, please check console for details', this.errorToast);
+          Vue.toasted.show('Server error, please check console for details', this.errorToast);
           console.log(`post error=`,error);
           // throw (error)
         })
@@ -178,16 +184,17 @@ export default {
       let requestStr = `http://localhost:3000/chggame/ ${this.crudGame.gameID}`;
       axios.put(requestStr, this.crudGame)
         .then ((resp) => {
+          console.log(resp.data);
           if (resp.data.errors) {
-            Vue.toast('Server error, please check console for details', this.errorToast);
+            Vue.toasted.show('Server error, please check console for details', this.errorToast);
             console.log(`post resp=`,resp);
           }
           else {
-            Vue.toast('Game Changed', this.notifyToast);
+            Vue.toasted.show('Game Changed', this.successToast);
           }
         })
         .catch ((error) => {
-          Vue.toast('Server error, please check console for details', this.errorToast);
+          Vue.toasted.show('Server error, please check console for details', this.errorToast);
           console.log(`put error=`,error);
           // throw (error)
         })
@@ -201,8 +208,9 @@ export default {
         let requestStr = `http://localhost:3000/delgame/ ${this.crudGame.gameID}`;
         axios.delete(requestStr)
           .then ((resp) => {
+            console.log(resp.data);
             if (resp.data.errors) {
-              Vue.toast('Server error, please check console for details', this.errorToast);
+              Vue.toasted.show('Server error, please check console for details', this.errorToast);
               console.log(`post resp=`,resp);
             }
             else {
@@ -214,11 +222,11 @@ export default {
               else {
                 this.emptyCrud();
               }
-              Vue.toast('Game Deleted', this.notifyToast);
+              Vue.toasted.show('Game Deleted', this.successToast);
             }
           })
           .catch ((error) => {
-            Vue.toast('Server error, please check console for details', this.errorToast);
+            Vue.toasted.show('Server error, please check console for details', this.errorToast);
             console.log(`delete error=`,error);
             // throw (error)
           })
@@ -246,21 +254,27 @@ export default {
       }
     },
     findGame () {
-      let requestStr = `http://localhost:3000/game/name/${encodeURIComponent(this.search.nameTx)}`
-      if (this.search.editionTx !== '') {
-        requestStr += `/edition/${encodeURIComponent(this.search.editionTx)}`
+      if (this.search.nameTx !== '') {
+        let requestStr = `http://localhost:3000/game/name/${encodeURIComponent(this.search.nameTx)}`
+        if (this.search.editionTx !== '') {
+          requestStr += `/edition/${encodeURIComponent(this.search.editionTx)}`
+        }
+        axios.get(requestStr)
+          .then ((resp) => {
+            console.log(resp.data);
+            this.games = resp.data;
+            this.gameIndex = 0;
+            this.loadCrud(this.gameIndex);
+          })
+          .catch ((error) => {
+            Vue.toasted.show('Server error, please check console for details', this.errorToast);
+            console.log(`get error=`, error);
+            // throw (error)
+          })
       }
-      axios.get(requestStr)
-        .then ((resp) => {
-          this.games = resp.data;
-          this.gameIndex = 0;
-          this.loadCrud(this.gameIndex);
-        })
-        .catch ((error) => {
-          Vue.toast('Server error, please check console for details', this.errorToast);
-          console.log(`get error=`, error);
-          // throw (error)
-        })
+      else {
+        Vue.toasted.show("Please enter a search name", this.notifyToast);
+      }
     },
     loadCrud(i) {
       this.crudGame = {
@@ -301,37 +315,5 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-input, textarea {
-  display:inline-block;
-  width: 20em;
-  margin: 1em 0 0 0.5em;
-}
-textarea {
-    font-family: 'Avenir', Helvetica, Arial, sans-serif;
-}
-.nbrsize {
-  width: 5em;
-}
-.check {
-  width: 1em;
-}
-button {
-  margin: 1em .5em 0;
-}
-form {
-  max-width: 30em;
-}
-.border {
-  border: solid 1px black;
-  padding: 1em;
-  max-width: 30em;
-}
-.inblock {
-  display:inline-block;
-}
-.rownm {
-  display:inline-block;
-  text-align: right;
-  width: 8em;
-}
+
 </style>

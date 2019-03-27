@@ -6,7 +6,7 @@
         <h3>{{games[gameIndex].nameTx}}
           <span v-show="games[gameIndex].editionTx"> - {{games[gameIndex].editionTx}}</span>
         </h3>
-        <div class="">
+        <div>
           <span class="rownm">Rating:</span> {{games[gameIndex].ratingQt}},
           <span>Play Average: {{games[gameIndex].averageRatingQt}}</span>
         </div>
@@ -17,18 +17,18 @@
         <div v-show="games[gameIndex].lastPlayDtTm">
           <span class="rownm">Played:</span> {{games[gameIndex].playQt}} time<span v-if="games[gameIndex].playQt > 1">s</span>, Won {{games[gameIndex].winQt}}
         </div>
-        <div class="">
+        <div>
           <span class="rownm">Players:</span> {{games[gameIndex].playerMinQt}}
           <span v-if="games[gameIndex].playerMinQt != games[gameIndex].playerMaxQt"> - {{games[gameIndex].playerMaxQt}}, Best with {{games[gameIndex].playerBestQt}}</span>
         </div>
         <div v-show="games[gameIndex].playerMinYr">
           <span class="rownm">Age:</span> {{games[gameIndex].playerMinYr}} or older
         </div>
-        <div class="">
+        <div>
           <span class="rownm">Play Time:</span>
           {{games[gameIndex].timeMinQt}} - {{games[gameIndex].timeMaxQt}}
         </div>
-        <div class="">
+        <div>
           <span>Rules Read? <input v-model="games[gameIndex].rulesIn" @change="rulesRead" type="checkbox" class="check"></span>
           <span>In Shrink Wrap? <input v-model="games[gameIndex].shrinkIn" @change="unwrapped" type="checkbox" class="check"></span>
           <span v-show="games[gameIndex].liquidateCd">
@@ -59,75 +59,76 @@
     <div class="inblock">
       <div class="border">
         <h3>Add Play</h3>
-        <div class="">
+        <div>
           <div class="rownm">Start Time:</div>
           <input v-model="playObj.startDtTm" type="datetime-local" class="shorter">*
         </div>
-        <div class="">
+        <div>
           <div class="rownm">End Time:</div>
           <input v-model="playObj.endDtTm" type="datetime-local" class="shorter">*
         </div>
-        <div class="">
+        <div>
           <div class="rownm">Players:</div>
           <input v-model="playObj.playerQt" type="number" class="nbrsize" min="1" max="128">*
         </div>
-        <div class="">
+        <div>
           <div class="rownm">Rating (1-5):</div>
           <input v-model="playObj.ratingQt" type="number" class="nbrsize" min="1" max="5">
         </div>
-        <div class="">
+        <div>
           <div class="rownm">Result:</div>
           <input v-model="playObj.winCd" type="text" class="nbrsize" maxlength="10"> (win, lose, tie, etc.)
         </div>
-        <div class="">
+        <div>
           <button type="button" @click="addPlay">Add Play</button>
           <button type="button" @click="emptyPlay">Clear Details</button>
         </div>
       </div>
     </div>
-    <div class="">
+    <div>
       <div class="border">
         <h3>Game Search</h3>
-        <div class="">
+        <div>
           <div class="rownm">Name:</div>
           <input v-model="searchObj.nameTx" type="text">
         </div>
-        <div class="">
+        <div>
           <div class="rownm">Edition:</div>
           <input v-model="searchObj.editionTx" type="text" maxlength="20">
         </div>
-        <div class="">
+        <div>
           <div class="rownm">Rating:</div>
           <input v-model="searchObj.ratingQt" type="number" class="nbrsize" min="1" max="5">
         </div>
-        <div class="">
+        <div>
           <div class="rownm">Players:</div>
           <input v-model="searchObj.playerQt" type="number" class="nbrsize" min="1" max="128">
           Youngest:<input v-model="searchObj.ageMinYr" type="number" class="nbrsize" min="1" max="128">
         </div>
-        <div class="">
+        <div>
           <div class="rownm">Time:</div>
           <input v-model="searchObj.timeQt" type="number" class="nbrsize" min="1" max="32767">
         </div>
-        <div class="">
+        <div>
           <div class="rownm">Keyword:</div>
           <input v-model="searchObj.keywordTx" type="text">
         </div>
-        <div class="">
+        <div>
           <button type="button" @click="findGame('search')">Search</button>
           <button type="button" @click="findGame('random')">Random</button>
           <button type="button" @click="clearSearch">Clear</button>
         </div>
       </div>
     </div>
-    <div class="inblock" v-if="games.length > 1">
+    <div class="inblock" v-if="games.length > 0">
       <h3>Games Found</h3>
-      <p>Rating: Game</p>
-      <div class="" v-for="(listGame,index) in games" :key="index">
-        <button type="button" @click="selectList(index)">Select</button>
-        <span>{{listGame.ratingQt}}:</span>
-        {{listGame.nameTx}}
-        <span v-show="listGame.editionTx"> - {{listGame.editionTx}}</span>
+      <p div="rownm">Rating: Game</p>
+      <div v-for="(listGame,index) in games" :key="index">
+        <button class="bigtx" type="button" @click="selectList(index)">Select</button>
+        <div class="bigtx">{{listGame.ratingQt}}:</div>
+        <div class="bigtx">{{listGame.nameTx}}
+          <span v-show="listGame.editionTx"> - {{listGame.editionTx}}</span>
+        </div>
       </div>
     </div>
   </div>
@@ -144,13 +145,6 @@ export default {
     return {
       title: 'Guide Book',
       playObj: {},
-      errorToast: {
-        className: 'et-alert',
-        horizontalPosition: 'center',
-        verticalPosition: 'top',
-        duration: 5000,
-        closeable: true
-      },
       gameIndex: 0,
       games: [{
         gameID: -1,
@@ -176,12 +170,27 @@ export default {
         averageRatingQt: null,
         winCd: "",
       }],
+      errorToast: {
+        className: 'toast',
+        position: 'top-center',
+        duration: 5000,
+        fullWidth: true,
+        fitToScren: true,
+        type: 'error'
+      },
       notifyToast: {
-        className: 'et-info',
-        horizontalPosition: 'center',
-        verticalPosition: 'top',
+        className: 'toast',
+        position: 'top-center',
         duration: 2000,
-        closeable: true
+        type: 'info',
+        theme: 'bubble'
+      },
+      successToast: {
+        className: 'toast',
+        position: 'top-center',
+        duration: 2000,
+        type: 'success',
+        theme: 'bubble'
       },
       searchObj: {
         nameTx: '',
@@ -200,6 +209,7 @@ export default {
     let requestStr = `http://localhost:3000/latestgame`;
     axios.get(requestStr)
       .then ((resp) => {
+        console.log(resp.data);
         if (!resp.data.errors) {
           this.games.push(resp.data);
           this.games.shift();
@@ -207,12 +217,12 @@ export default {
           this.fetchStats();
         }
         else {
-          Vue.toast('Server error, please check console for details', this.errorToast);
+          Vue.toasted.show('Server error, please check console for details', this.errorToast);
           console.log(`post resp=`,resp);
         }
       })
       .catch (error => {
-        Vue.toast('Server error, please check console for details', this.errorToast);
+        Vue.toasted.show('Server error, please check console for details', this.errorToast);
         console.log(`get error=`, error);
         // throw (error)
       })
@@ -224,17 +234,18 @@ export default {
       let requestStr = `http://localhost:3000/addplay/`
       axios.post(requestStr, this.playObj)
         .then ((resp) => {
+          console.log(resp.data);
           if (!resp.data.errors) {
             this.emptyPlay();
-            Vue.toast('Play Added', this.notifyToast);
+            Vue.toasted.show('Play Added', this.successToast);
           }
           else {
-            Vue.toast('Server error, please check console for details', this.errorToast);
+            Vue.toasted.show('Server error, please check console for details', this.errorToast);
             console.log(`post resp=`,resp);
           }
         })
         .catch ((error) => {
-          Vue.toast('Server error, please check console for details', this.errorToast);
+          Vue.toasted.show('Server error, please check console for details', this.errorToast);
           console.log(`post error=`,error);
           // throw (error)
         })
@@ -265,6 +276,7 @@ export default {
       let statStr = `http://localhost:3000/playstats/` + encodeURIComponent(this.games[this.gameIndex].nameTx);
       axios.get(statStr)
         .then ((resp) => {
+          console.log(resp.data);
           if (!resp.data.errors) {
             Vue.set(this.games[this.gameIndex], 'lastPlayDtTm',moment(resp.data.lastPlayDtTm).format('dddd, MMMM Do YYYY, h:mm:ss a'));
             Vue.set(this.games[this.gameIndex], 'playQt', resp.data.playQt);
@@ -272,12 +284,12 @@ export default {
             Vue.set(this.games[this.gameIndex], 'winQt', resp.data.winQt);
           }
           else {
-            Vue.toast('Server error, please check console for details', this.errorToast);
+            Vue.toasted.show('Server error, please check console for details', this.errorToast);
             console.log(`post resp=`,resp);
           }
         })
         .catch ((error) => {
-          Vue.toast('Server error, please check console for details', this.errorToast);
+          Vue.toasted.show('Server error, please check console for details', this.errorToast);
           console.log(`post error=`,error);
           // throw (error)
         })
@@ -286,17 +298,25 @@ export default {
       let requestStr = `http://localhost:3000/searchgames`;
       axios.post(requestStr, this.searchObj)
         .then ((resp) => {
-          this.games = resp.data;
-          if (whichStr === 'random' && this.games.length > 1) {
-            this.gameIndex = Math.floor(Math.random() * this.games.length);
+          console.log(resp.data);
+          if (!resp.data.errors) {
+            this.games = resp.data;
+            if (whichStr === 'random' && this.games.length > 1) {
+              this.gameIndex = Math.floor(Math.random() * this.games.length);
+            }
+            else {
+              this.gameIndex = 0;
+            }
+            this.fetchStats();
+            Vue.toasted.show(`${this.games.length} found`, this.notifyToast);
           }
           else {
-            this.gameIndex = 0;
+            Vue.toasted.show('Server error, please check console for details', this.errorToast);
+            console.log(`get resp=`, resp);
           }
-          this.fetchStats();
         })
         .catch ((error) => {
-          Vue.toast('Server error, please check console for details', this.errorToast);
+          Vue.toasted.show('Server error, please check console for details', this.errorToast);
           console.log(`get error=`, error);
           // throw (error)
         })
@@ -308,12 +328,21 @@ export default {
         rulesObj.rulesIn = 1;
       }
       axios.patch(patchStr, rulesObj )
-        .then ()
-        .catch ((error) => {
-          Vue.toast('Server error, please check console for details', this.errorToast);
-          console.log(`get error=`, error);
-          // throw (error)
-        })
+      .then ((resp) => {
+        console.log(resp.data);
+        if (!resp.data.errors) {
+          Vue.toated.success('Rules Read, have fun!', this.successToast)
+        }
+        else {
+          Vue.toasted.show('Server error, please check console for details', this.errorToast);
+          console.log(`get resp=`, resp);
+        }
+      })
+      .catch ((error) => {
+        Vue.toasted.show('Server error, please check console for details', this.errorToast);
+        console.log(`get error=`, error);
+        // throw (error)
+      })
     },
     selectList (i) {
       this.gameIndex = i;
@@ -326,9 +355,18 @@ export default {
         shrinkObj.shrinkIn = 1;
       }
       axios.patch(patchStr, shrinkObj)
-        .then ()
+        .then ((resp) => {
+          console.log(resp.data);
+          if (!resp.data.errors) {
+            Vue.toasted.success('Game Unwrapped', this.successToast)
+          }
+          else {
+            Vue.toasted.show('Server error, please check console for details', this.errorToast);
+            console.log(`get resp=`, resp);
+          }
+        })
         .catch ((error) => {
-          Vue.toast('Server error, please check console for details', this.errorToast);
+          Vue.toasted.show('Server error, please check console for details', this.errorToast);
           console.log(`get error=`, error);
           // throw (error)
         })
@@ -339,60 +377,5 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-body {
-  font-size: 1.2em;
-}
-input, textarea {
-  display:inline-block;
-  width: 20em;
-  margin: 0.5em 0 0 0.5em;
-}
-.nbrsize {
-  width: 3.2em;
-}
-.check {
-  width: 1em;
-  margin: 1em 0.5em 0 0;
-}
-button {
-  margin: 1em .5em 0;
-}
-form {
-  max-width: 30em;
-}
-.border {
-  border: solid 1px black;
-  padding: 1em;
-  max-width: 26em;
-  margin: 0 1em 1em 0;
-}
-.bigtx {
-  margin: 0 0 0 6.2em
-}
-.card {
-  border: solid 1px black;
-  display: inline-block;
-  background: lightblue;
-  margin: 0 1em 1em 0;
-  padding: 1em;
-  max-width: 30em;
-}
-.rownm {
-  display:inline-block;
-  text-align: right;
-  width: 6em;
-}
-.shorter {
-  width: 17em;
-}
 
-@media (min-width: 768px) {
-  body {
-    font-size: 1em;
-  }
-  .inblock {
-    display:inline-block;
-    vertical-align: top;
-  }
-}
 </style>
