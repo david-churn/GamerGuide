@@ -251,12 +251,12 @@ button {
   margin: 1em .5em 0;
 }
 form {
-  max-width: 30em;
+  max-width: 26.5em;
 }
 .border {
   border: solid 1px black;
   padding: 1em;
-  max-width: 30em;
+  max-width: 26.5em;
 }
 .card {
   border: solid 1px black;
