@@ -19,8 +19,10 @@
         </div>
       </div>
     </div>
-    <h1>Gamer Guide</h1>
-    <router-view/>
+    <main>
+      <h1>Gamer Guide</h1>
+      <router-view/>
+    </main>
     <footer>&copy; 2019</footer>
   </div>
 </template>
@@ -48,16 +50,20 @@ body {
   background: $whitish;
   font-size: 1.2em;
 }
+main {
+  margin: 1em;
+}
+button {
+  margin: 1em 0.5em 0;
+}
 input, textarea {
   display:inline-block;
-  width: 75%;
-}
-form {
-  max-width: 90%;
+  margin: 0.1em 0;
 }
 footer {
   background: $redish;
   color: $whitish;
+  margin: 1em 0 0;
   text-align: center;
 }
 #nav {
@@ -87,27 +93,31 @@ footer {
 /* classes */
 .bigtx {
   display: inline-block;
+  width: 68%;
   vertical-align: top;
 }
 .border {
-  border: solid 1px black;
+  border: solid 1px $grayish;
+  margin: 1em 0;
   padding: 1em;
-  max-width: 30em;
+  width: 100%;
 }
-.check {
-  width: 1%;
+.card {
+  border: solid 1px $grayish;
+  display: inline-block;
+  margin: 1%;
+  max-width: 40%;
+  padding: 0.5em;
 }
 .inblock {
   display:inline-block;
 }
-.logoplace {
-  position:relative;
-  top: 0;
-  left: 47%;
-}
 .logo {
   height: 2em;
   width: 2em;
+}
+.logoplace {
+  text-align: center;
 }
 .nbrsize {
   width: 10%;
@@ -115,11 +125,12 @@ footer {
 .rownm {
   display:inline-block;
   text-align: right;
-  width: 20%;
+  width: 30%;
+  margin: 0 1%;
 }
-.toast{
+.toasted-container .toasted.bubble {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
-    font-size: 20em;
+    font-size: 1.5em;
 }
 /* textarea {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
@@ -161,10 +172,28 @@ footer {
       }
     }
   }
+  body {
+    font-size: 1em;
+  }
+  form {
+    max-width: 80%;
+  }
+  main {
+    margin: 0 5%;
+  }
+  .border {
+    vertical-align: top;
+    width: 45%;
+    margin: 1%;
+  }
   .logoplace {
-    position:relative;
+    position: relative;
     top: 0;
     left: 0;
+    text-align: left;
+  }
+  .rownm {
+    width: 6em;
   }
 }
 </style>

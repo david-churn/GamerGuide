@@ -1,8 +1,8 @@
 <template>
   <div class="home">
     <h2>{{ title }}</h2>
-    <div class="inblock">
-      <div class="border">
+    <div class="container">
+      <div class="inblock border">
         <h3>{{games[gameIndex].nameTx}}
           <span v-show="games[gameIndex].editionTx"> - {{games[gameIndex].editionTx}}</span>
         </h3>
@@ -14,7 +14,7 @@
           <div class="rownm">Last Play:</div>
           <div class="bigtx">{{games[gameIndex].lastPlayDtTm}}</div>
         </div>
-        <div v-show="games[gameIndex].lastPlayDtTm">
+        <div v-show="games[gameIndex].playQt">
           <span class="rownm">Played:</span> {{games[gameIndex].playQt}} time<span v-if="games[gameIndex].playQt > 1">s</span>, Won {{games[gameIndex].winQt}}
         </div>
         <div>
@@ -29,11 +29,16 @@
           {{games[gameIndex].timeMinQt}} - {{games[gameIndex].timeMaxQt}}
         </div>
         <div>
-          <span>Rules Read? <input v-model="games[gameIndex].rulesIn" @change="rulesRead" type="checkbox" class="check"></span>
-          <span>In Shrink Wrap? <input v-model="games[gameIndex].shrinkIn" @change="unwrapped" type="checkbox" class="check"></span>
-          <span v-show="games[gameIndex].liquidateCd">
-          &gt;{{games[gameIndex].liquidateCd}}&lt;
-          </span>
+          <span class="rownm">Rules Read?</span>
+          <input v-model="games[gameIndex].rulesIn" @change="rulesRead" type="checkbox" class="check">
+        </div>
+        <div>
+          <span class="rownm">In Shrink?</span>
+          <input v-model="games[gameIndex].shrinkIn" @change="unwrapped" type="checkbox" class="check">
+        </div>
+        <div v-show="games[gameIndex].liquidateCd">
+          <span class="rownm">Sell It?</span>
+          {{games[gameIndex].liquidateCd === 'S' ? "Sell" : "Trade"}}
         </div>
         <div v-show="games[gameIndex].keywordsTx">
           <div class="rownm">Keywords:</div>
@@ -55,10 +60,9 @@
           <button type="button" @click="anotherGame">Another</button>
         </div>
       </div>
-    </div>
-    <div class="inblock">
-      <div class="border">
+      <div class="inblock border">
         <h3>Add Play</h3>
+        <p>* notes required fields</p>
         <div>
           <div class="rownm">Start Time:</div>
           <input v-model="playObj.startDtTm" type="datetime-local" class="shorter">*
@@ -84,39 +88,39 @@
           <button type="button" @click="emptyPlay">Clear Details</button>
         </div>
       </div>
-    </div>
-    <div>
-      <div class="border">
-        <h3>Game Search</h3>
-        <div>
-          <div class="rownm">Name:</div>
-          <input v-model="searchObj.nameTx" type="text">
-        </div>
-        <div>
-          <div class="rownm">Edition:</div>
-          <input v-model="searchObj.editionTx" type="text" maxlength="20">
-        </div>
-        <div>
-          <div class="rownm">Rating:</div>
-          <input v-model="searchObj.ratingQt" type="number" class="nbrsize" min="1" max="5">
-        </div>
-        <div>
-          <div class="rownm">Players:</div>
-          <input v-model="searchObj.playerQt" type="number" class="nbrsize" min="1" max="128">
-          Youngest:<input v-model="searchObj.ageMinYr" type="number" class="nbrsize" min="1" max="128">
-        </div>
-        <div>
-          <div class="rownm">Time:</div>
-          <input v-model="searchObj.timeQt" type="number" class="nbrsize" min="1" max="32767">
-        </div>
-        <div>
-          <div class="rownm">Keyword:</div>
-          <input v-model="searchObj.keywordTx" type="text">
-        </div>
-        <div>
-          <button type="button" @click="findGame('search')">Search</button>
-          <button type="button" @click="findGame('random')">Random</button>
-          <button type="button" @click="clearSearch">Clear</button>
+      <div>
+        <div class="border">
+          <h3>Game Search</h3>
+          <div>
+            <div class="rownm">Name:</div>
+            <input v-model="searchObj.nameTx" type="text">
+          </div>
+          <div>
+            <div class="rownm">Edition:</div>
+            <input v-model="searchObj.editionTx" type="text" maxlength="20">
+          </div>
+          <div>
+            <div class="rownm">Rating:</div>
+            <input v-model="searchObj.ratingQt" type="number" class="nbrsize" min="1" max="5">
+          </div>
+          <div>
+            <div class="rownm">Players:</div>
+            <input v-model="searchObj.playerQt" type="number" class="nbrsize" min="1" max="128">
+            Youngest:<input v-model="searchObj.ageMinYr" type="number" class="nbrsize" min="1" max="128">
+          </div>
+          <div>
+            <div class="rownm">Time:</div>
+            <input v-model="searchObj.timeQt" type="number" class="nbrsize" min="1" max="32767">
+          </div>
+          <div>
+            <div class="rownm">Keyword:</div>
+            <input v-model="searchObj.keywordTx" type="text">
+          </div>
+          <div>
+            <button type="button" @click="findGame('search')">Search</button>
+            <button type="button" @click="findGame('random')">Random</button>
+            <button type="button" @click="clearSearch">Clear</button>
+          </div>
         </div>
       </div>
     </div>
@@ -124,9 +128,9 @@
       <h3>Games Found</h3>
       <p div="rownm">Rating: Game</p>
       <div v-for="(listGame,index) in games" :key="index">
-        <button class="bigtx" type="button" @click="selectList(index)">Select</button>
-        <div class="bigtx">{{listGame.ratingQt}}:</div>
-        <div class="bigtx">{{listGame.nameTx}}
+        <button class="inblock" type="button" @click="selectList(index)">Select</button>
+        <div class="inblock">{{listGame.ratingQt}}:</div>
+        <div class="inblock">{{listGame.nameTx}}
           <span v-show="listGame.editionTx"> - {{listGame.editionTx}}</span>
         </div>
       </div>
@@ -171,7 +175,6 @@ export default {
         winCd: "",
       }],
       errorToast: {
-        className: 'toast',
         position: 'top-center',
         duration: 5000,
         fullWidth: true,
@@ -179,14 +182,12 @@ export default {
         type: 'error'
       },
       notifyToast: {
-        className: 'toast',
         position: 'top-center',
         duration: 2000,
         type: 'info',
         theme: 'bubble'
       },
       successToast: {
-        className: 'toast',
         position: 'top-center',
         duration: 2000,
         type: 'success',
@@ -308,7 +309,7 @@ export default {
               this.gameIndex = 0;
             }
             this.fetchStats();
-            Vue.toasted.show(`${this.games.length} found`, this.notifyToast);
+            Vue.toasted.show(`${this.games.length} games found`, this.notifyToast);
           }
           else {
             Vue.toasted.show('Server error, please check console for details', this.errorToast);

@@ -56,8 +56,10 @@
       <h3>Play List</h3>
       <div class="card" v-for="(listPlay,index) in plays" :key="index">
         <div>
-          <span>{{listPlay.nameTx}}</span>
-          <span v-if="listPlay.editionTx"> - {{listPlay.editionTx}}</span>
+          <h4>
+            <span>{{listPlay.nameTx}}</span>
+            <span v-if="listPlay.editionTx"> - {{listPlay.editionTx}}</span>
+          </h4>
         </div>
         <div>
           <span>Players:<input v-model="listPlay.playerQt" type="number" class="nbrsize" min="1" max="128"></span>
