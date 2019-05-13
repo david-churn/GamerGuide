@@ -246,7 +246,5 @@ export default {
 }
 </script>
 
-// These are similar to games definitions.  ?Put in main for global scope?
 <style scoped>
-
 </style>

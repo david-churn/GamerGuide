@@ -132,12 +132,6 @@ footer {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     font-size: 1.5em;
 }
-/* textarea {
-    font-family: 'Avenir', Helvetica, Arial, sans-serif;
-} */
-/* button {
-  margin: 1em .5em 0;
-} */
 
 // responsive change
 @media (min-width: 768px) {
